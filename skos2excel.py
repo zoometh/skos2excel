@@ -73,7 +73,7 @@ for s, p, o in g.triples((None, RDF.type, SKOS.Concept)):
 
 if target_format == 'csv':
 
-        with open(output_file, 'w') as csv_file:
+        with open(output_file, 'w', encoding="utf-8") as csv_file:
                 csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                 for item in ret:
                         csv_writer.writerow(item)

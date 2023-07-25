@@ -14,3 +14,5 @@ The reverse script (not written yet) will take the checked
 spreadsheet and recreate the thesaurus for importing back into
 Arches.
 
+## example
+
