@@ -10,9 +10,11 @@ Arches thesaurus in SKOS(RDF/XML) format and spit out an Excel
 file, optionally translating into an additional language, much
 like po2excel did.
 
-The reverse script (not written yet) will take the checked
+The reverse script, `excel2skos.py`, will take the checked
 spreadsheet and recreate the thesaurus for importing back into
-Arches.
+Arches. It requires the original SKOS file as a base, and only
+adds triples, it never replaces or deletes existing them. The
+base file is considered to be truth.
 
 Install dependencies
 
