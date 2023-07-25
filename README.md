@@ -14,5 +14,18 @@ The reverse script (not written yet) will take the checked
 spreadsheet and recreate the thesaurus for importing back into
 Arches.
 
-## example
+Install dependencies
 
+```bash
+pip3 install -r requirements.txt
+```
+Convert to French, as CSV
+
+```bash
+py skos2excel.py ./data/EAMENA.xml ./data/EAMENA_out.csv -lang fr -f csv 
+```
+Convert to French, as XLSX
+
+```bash
+py skos2excel.py ./data/EAMENA.xml ./data/EAMENA_out.xlsx -lang fr -f xlsx 
+```
