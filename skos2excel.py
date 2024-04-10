@@ -39,22 +39,42 @@ if target_format != 'xlsx':
 ret = []
 
 ret.append(['id', 'language', 'text'])
-
+ct = 0 ; print_each = 100 ; g_len = len(g)
 for s, p, o in g.triples((None, RDF.type, SKOS.Concept)):
-
+	ct = ct + 1
+	do = ct % print_each
+	if do == 0:
+		print(f"Read record: {ct}/{g_len}")
 	uri = str(s)
 	id = uri.split('/')[-1]
 	trans = {}
 	for ss, pp, oo in g.triples((s, SKOS.prefLabel, None)):
 
-		data = json.loads(str(oo))
-		lang = str(oo.language)
-		if lang == 'en-us':
-			lang = 'en'
-		if not('value' in data):
-			continue
+		try:
+			data = json.loads(str(oo))
+			lang = str(oo.language)
+			if lang == 'en-us':
+				lang = 'en'
+			if not('value' in data):
+				continue
+			trans[lang] = data['value']
+		except json.JSONDecodeError as e:
+			# json.decoder.JSONDecodeError ?
+			print("Failed to decode JSON: ", str(oo))
+		except Exception as e:
+			# Handle other possible exceptions
+			print("An unexpected error occurred: ", str(oo))
+		# else:
+			# Code to execute if JSON is successfully parsed
+			# print("JSON parsed successfully")
 
-		trans[lang] = data['value']
+		# data = json.loads(str(oo))
+		# lang = str(oo.language)
+		# if lang == 'en-us':
+		# 	lang = 'en'
+		# if not('value' in data):
+		# 	continue
+
 
 	if len(trans) == 0:
 		continue
@@ -72,17 +92,17 @@ for s, p, o in g.triples((None, RDF.type, SKOS.Concept)):
 		ret.append([id, lang, trans[lang]])
 
 if target_format == 'csv':
-
-        with open(output_file, 'w', encoding="utf-8") as csv_file:
-                csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-                for item in ret:
-                        csv_writer.writerow(item)
+		print(f"Export {ct} translated concept values to CSV")
+		with open(output_file, 'w', encoding="utf-8") as csv_file:
+				csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+				for item in ret:
+						csv_writer.writerow(item)
 
 if target_format == 'xlsx':
+		print(f"Export {ct} translated concept values to XLSX")
+		wb = Workbook()
+		ws = wb.active
+		for item in ret:
+				ws.append(item)
 
-        wb = Workbook()
-        ws = wb.active
-        for item in ret:
-                ws.append(item)
-
-        wb.save(output_file)
+		wb.save(output_file)

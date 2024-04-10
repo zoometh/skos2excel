@@ -23,8 +23,11 @@ input_file = args.CSVFile
 output_file = args.SKOSFile
 mapping = {}
 
+print(base_file)
+
 g = Graph()
 if os.path.exists(base_file):
+	print(f"Base is: {base_file}")
 	with open(base_file, 'r') as fp:
 		data = fp.read()
 	g.parse(data=data, format='xml')
@@ -84,8 +87,12 @@ for row in data:
 	translations[id][lang] = text
 
 inserts = []
+ct = 0 ; print_each = 100 ; g_len = len(g)
 for s, p, o in g.triples((None, RDF.type, SKOS.Concept)):
-
+	ct = ct + 1
+	do = ct % print_each
+	if do == 0:
+		print(f"Read record: {ct}/{g_len}")
 	uri = str(s)
 	id = uri.split('/')[-1]
 	trans = translations[id]
@@ -117,3 +124,4 @@ for item in inserts:
 
 with open(output_file, 'w') as fp:
 	fp.write(g.serialize(format='pretty-xml'))
+print("Exported")
